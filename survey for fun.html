@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>关于______帅不帅的调查网站</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{
+    background:linear-gradient(135deg,#ff6b6b,#feca57,#48dbfb,#ff9ff3);
+    background-size:400% 400%;
+    animation:bg 8s ease infinite;
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    font-family:"Microsoft Yahei",sans-serif;
+    overflow:hidden;
+}
+@keyframes bg{
+    0%{background-position:0% 50%;}
+    50%{background-position:100% 50%;}
+    100%{background-position:0% 50%;}
+}
+h1{
+    font-size:120px;
+    color:#fff;
+    text-shadow:0 0 20px #ff0066,0 0 40px #ff0066;
+    margin-bottom:60px;
+    animation:shake 2s infinite;
+}
+@keyframes shake{
+    0%,100%{transform:rotate(-2deg);}
+    50%{transform:rotate(2deg);}
+}
+.btn-box{
+    position:relative;
+    width:500px;
+    height:120px;
+}
+button{
+    position:absolute;
+    width:200px;
+    height:100px;
+    font-size:50px;
+    font-weight:bold;
+    border:none;
+    border-radius:40px;
+    cursor:pointer;
+    transition:all 0.2s;
+    box-shadow:0 8px 20px rgba(0,0,0,0.3);
+}
+#yes{
+    left:-40px;
+    top:20px;
+    background:linear-gradient(135deg,#00ff88,#00cc66);
+    color:#fff;
+}
+#yes:hover{
+    transform:scale(1.15);
+    box-shadow:0 0 30px #00ff88;
+}
+#no{
+    right:-40px;
+    top:20px;
+    background:linear-gradient(135deg,#ff4444,#cc0000);
+    color:#fff;
+}
+.tip{
+    margin-top:50px;
+    color:#fff;
+    font-size:20px;
+    opacity:0.8;
+}
+/* 成功页面 */
+#success{
+    display:none;
+    position:fixed;
+    top:0;left:0;
+    width:100%;height:100%;
+    background:linear-gradient(135deg,#1a1a2e,#16213e);
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    z-index:999;
+}
+#success h2{
+    font-size:100px;
+    color:#ffdd57;
+    text-shadow:0 0 30px #ffaa00;
+    animation:pop 1s ease;
+}
+@keyframes pop{
+    0%{transform:scale(0);}
+    60%{transform:scale(1.3);}
+    100%{transform:scale(1);}
+}
+#success p{
+    font-size:36px;
+    color:#fff;
+    margin-top:30px;
+}
+.heart{
+    position:absolute;
+    font-size:40px;
+    animation:float 3s ease-in infinite;
+}
+@keyframes float{
+    0%{transform:translateY(100vh) scale(0);opacity:1;}
+    100%{transform:translateY(-100px) scale(1.5);opacity:0;}
+}
+</style>
+</head>
+<body>
+
+<div id="question">
+    <h1>______<br>帅不帅？</h1>
+    <div class="btn-box">
+        <button id="yes" onclick="win()">帅</button>
+        <button id="no" onmouseenter="runAway()">不帅</button>
+    </div>
+    <p class="tip">诚实回答哦~</p>
+</div>
+
+<div id="success">
+    <h2>🎉 %100的人 🎉<br>🎉跟你选的一样🎉</h2>
+    <p>你真是太有眼光了！</p>
+    <p style="margin-top:20px;font-size:24px;opacity:0.7;">全世界最帅的人就是______</p>
+</div>
+
+<script>
+const yesBtn = document.getElementById('yes');
+const noBtn = document.getElementById('no');
+//const box = document.querySelector('.btn-box');
+
+// 标志位：不帅按钮有没有被变成帅
+let noChanged = false;
+
+// 鼠标碰到"不帅"就交换位置
+function runAway(){
+    const yesLeft = yesBtn.style.left || getComputedStyle(yesBtn).left;
+    const noLeft = noBtn.style.left || getComputedStyle(noBtn).left;
+    yesBtn.style.left = noLeft;
+    noBtn.style.left = yesLeft;
+}
+function triggerSuccess(){
+    document.getElementById('question').style.display = 'none';
+    document.getElementById('success').style.display = 'flex';
+
+// 点"帅"进入成功页
+    const icons = ['❤️','💖','✨','🌟','💕','💫','⭐','💝','🎊','🎉','💗','🌈','<span style="color:#ffdd00">yes</span>',
+    '<span style="color:#ff44dd">大帅逼</span>','<span style="color:#44ff44"><*o*></span>'];
+
+    setInterval(()=>{
+        const h = document.createElement('div');
+        h.className = 'heart';
+        h.innerHTML = icons[Math.floor(Math.random()*icons.length)];
+
+        // x 轴随机
+        h.style.left = Math.random()*100 + '%';
+        // y 轴随机起始高度（从页面任意高度出现）
+        h.style.top = (30 + Math.random()*70) + '%';
+        // 随机大小
+        h.style.fontSize = (50 + Math.random()*100) + 'px';
+        // 随机动画时长（飘得快慢不一样）
+        h.style.animationDuration = (3.5 + Math.random()*3) + 's';
+        // 随机水平漂移方向
+        h.style.setProperty('--drift', (Math.random()*200 - 100) + 'px');
+
+        document.getElementById('success').appendChild(h);
+        setTimeout(()=>h.remove(), 6000);
+    }, 150);
+}
+yesBtn.onclick = triggerSuccess;
+
+// 手机/点击：第一次点不帅 → 只变帅不跳转；第二次点 → 进成功页
+noBtn.onclick = function(){
+    if(!noChanged){
+        // 第一次：把按钮变成帅的样子
+        noBtn.innerText = "帅";
+        noBtn.style.background = "linear-gradient(135deg,#00ff88,#00cc66)";
+        noBtn.style.boxShadow = "0 8px 20px rgba(0,0,0,0.3)";
+        noChanged = true;
+    }else{
+        // 第二次：已经是帅按钮了，点击触发成功
+        triggerSuccess();
+    }
+};
+
+// 电脑悬浮逃跑
+// noBtn.onmouseenter = runAway;
+if(!('ontouchstart' in window)){
+    noBtn.onmouseenter = runAway;
+}
+</script>
+
+</body>
+</html>
